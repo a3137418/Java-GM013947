@@ -1,7 +1,11 @@
 package com.example.demo.entity;
 
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.example.demo.enums.Role;
 
@@ -34,16 +38,21 @@ public class AppUser {
 	@Column(nullable = false)
 	private String password;
 	
-	@Column(nullable = false , length = 100)
+	@Column(nullable = false ,unique = true , length = 100)
 	private String email;
 	
-	@Column(nullable = false)
-	private Double assets;
+	@Column(nullable = false , precision = 10 , scale = 2)
+	private BigDecimal assets;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false , length = 20)
 	private Role role = Role.USER;
 	
+	@CreationTimestamp
+	@Column(updatable = false)
+	private LocalDateTime createdAt;
 	
-	private Date created_at;
+	@UpdateTimestamp
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
 }
