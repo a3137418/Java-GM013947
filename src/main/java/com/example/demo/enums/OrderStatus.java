@@ -1,5 +1,7 @@
 package com.example.demo.enums;
 
-public class OrderStatus {
-
+public enum OrderStatus {
+	PENDING,
+	FILLED,
+	CANCELLED
 }

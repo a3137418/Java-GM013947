@@ -1,5 +1,7 @@
 package com.example.demo.enums;
 
-public class KbarType {
-
+public enum KbarType {
+	DAY,
+	WEEK,
+	MONTH
 }

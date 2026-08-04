@@ -1,5 +1,6 @@
 package com.example.demo.enums;
 
-public class OrderType {
-
+public enum OrderType {
+	BUY,
+	SELL
 }
