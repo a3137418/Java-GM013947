@@ -10,6 +10,7 @@ import com.example.demo.entity.AppUser;
 import com.example.demo.enums.InitialCapital;
 import com.example.demo.enums.Role;
 import com.example.demo.exception.BusinessException;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.AppUserRepository;
 
 
@@ -22,7 +23,7 @@ public class AppUserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	
+	//註冊
 	public AppUser register(
 			String username, 
 			String password, 
@@ -43,7 +44,7 @@ public class AppUserService {
 		
 		return user;
 	}
-	
+	//設定初始金額
 	private BigDecimal resolveInitialAssets(InitialCapital initialCapital ) {
 		return switch(initialCapital) {
 		case TEN_W 			-> new BigDecimal("100000");
@@ -53,4 +54,35 @@ public class AppUserService {
 		
 	}
 	
+	//扣款
+	public AppUser deductAssets(AppUser user , BigDecimal amount) {
+		BigDecimal newAssets;
+		//1.檢查餘額夠不夠
+		if(user.getAssets().compareTo(amount) < 0) {
+			//2.不夠->丟例外
+			throw new BusinessException("餘額不足");
+		}else {
+			//3.夠-> user.getAssets() 減去 amount，setAssets，save
+			newAssets = user.getAssets().subtract(amount);
+			user.setAssets(newAssets);
+			appUserRepository.save(user);
+		}
+		return user;
+	}
+	
+	//入賬
+	public AppUser addAssets(AppUser user , BigDecimal amount) {
+		BigDecimal newAssets;
+		newAssets = user.getAssets().add(amount);
+		user.setAssets(newAssets);
+		appUserRepository.save(user);
+		
+		return user;
+	}
+	
+	//查詢使用者
+	public AppUser getUserById(Long userId) {
+		return appUserRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("找不到使用者"));
+	}
 }

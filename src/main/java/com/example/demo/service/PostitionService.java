@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.AppUser;
 import com.example.demo.entity.Postition;
 import com.example.demo.entity.Stock;
+import com.example.demo.exception.BusinessException;
 import com.example.demo.repository.PostitionRepository;
 
 @Service
@@ -60,11 +61,32 @@ public class PostitionService {
 	
 	//賣出
 	public BigDecimal decreasePosition(AppUser user , Stock stock , BigDecimal sellPrice , Long shares) {
+		Optional<Postition> existing = postitionRepository.findByUserIdAndStockId(user.getId(), stock.getId());
 		
+		Postition postition;
+		BigDecimal realized;
+		if(existing.isEmpty()) {
+			throw new BusinessException("該股票無持股");
+		}else {
+			postition = existing.get();
+			BigDecimal oldShares = BigDecimal.valueOf(postition.getShares());
+			BigDecimal newShares =  BigDecimal.valueOf(shares);
+			if (shares > postition.getShares()) {
+				throw new BusinessException("股數不足");
+			}else {
+				BigDecimal totalShares = oldShares.subtract(newShares);
+				realized = (sellPrice.subtract(postition.getCostPrice())).multiply(newShares);
+				
+				if (totalShares.compareTo(BigDecimal.ZERO) == 0) {
+					postitionRepository.delete(postition);
+				}else {
+					postition.setShares(postition.getShares() - shares );
+					postitionRepository.save(postition);
+				}
+			}
+		}
 		
-		
-		
-		return null;
+		return realized;
 	}
 	
 }

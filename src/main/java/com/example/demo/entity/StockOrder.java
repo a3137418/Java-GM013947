@@ -52,11 +52,12 @@ public class StockOrder {
 	@Column(nullable = false , precision = 10 , scale = 2)
 	private BigDecimal price;
 	
+	@Column(nullable = false)
+	private Long shares;
+	
 	@Column(name = "realized_pnl" , precision = 10 ,scale = 2)
 	private BigDecimal realizedPnl;
 	
-	@Column(nullable = false)
-	private Long shares;
 	
 	@CreationTimestamp
 	@Column(updatable = false)
