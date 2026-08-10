@@ -8,8 +8,10 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -59,4 +61,43 @@ public class JwtService {
 				.signWith(key , Jwts.SIG.HS256)
 				.compact();
 	}
+	
+	/**
+	 * 解析 JWT 裡面的 Claims 資料
+	 * */
+	private Claims getClaims(String token) {
+		return Jwts.parser()
+				.verifyWith(key)
+				.build()
+				.parseSignedClaims(token)
+				.getPayload();
+	}
+	
+	/*
+	 * 驗證 JWT Token 是否過期
+	 * */
+	private boolean isExpired(String token) {
+		return getClaims(token).getExpiration().before(new Date());
+	}
+	
+	
+	/*
+	 * 從 JWT Token 解析 username
+	 * */
+	public String extractUsername(String token) {
+		return getClaims(token).getSubject();
+	}
+	
+	
+	
+	
+	/*
+	 * 驗證 JWT Token 是否有效
+	 * */
+	public boolean isValid(String token , UserDetails userDetails) {
+		String username = extractUsername(token);
+		return username.equals(userDetails.getUsername()) && !isExpired(token);
+	}
+	
+	
 }
