@@ -16,6 +16,7 @@ import com.example.demo.repository.AppUserRepository;
 
 @Service
 public class AppUserService {
+
 	
 	@Autowired
 	private AppUserRepository appUserRepository;
@@ -80,9 +81,17 @@ public class AppUserService {
 		return user;
 	}
 	
-	//查詢使用者
+	//查詢使用者ID
 	public AppUser getUserById(Long userId) {
 		return appUserRepository.findById(userId)
 				.orElseThrow(() -> new ResourceNotFoundException("找不到使用者"));
 	}
+	
+	//查詢使用者姓名
+	public AppUser getUserByUsername(String username) {
+		return appUserRepository.findByUsername(username)
+				.orElseThrow(() -> new ResourceNotFoundException("找不到使用者"));
+	}
+	
+	
 }
