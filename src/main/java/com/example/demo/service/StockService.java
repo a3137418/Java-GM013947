@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class StockService {
    @Autowired
    private StockRepository stockRepository;
 
-	
+	// 新增股票
    public Stock addStock(String stockId , String stockName , BigDecimal price) {
 		if(stockRepository.existsByStockId(stockId)) {
 			throw new BusinessException("股票已存在");
@@ -33,8 +34,22 @@ public class StockService {
 		
 	}
 	
+   //查詢股票
 	public Stock findByStockId(String stockId) {
 	    return stockRepository.findByStockId(stockId)
 	            .orElseThrow(() -> new ResourceNotFoundException("查無此股票"));
+	}
+	
+	public void syncStock(String stockId, String stockName, BigDecimal price) {
+		Optional<Stock> existing = stockRepository.findByStockId(stockId);
+		if(existing.isPresent()) {
+			// 已存在，只更新價格
+			Stock stock = existing.get();
+			stock.setPrice(price);
+			stockRepository.save(stock);
+		}else {
+			// 不存在，新增
+			addStock(stockId, stockName, price);
+		}
 	}
 }
