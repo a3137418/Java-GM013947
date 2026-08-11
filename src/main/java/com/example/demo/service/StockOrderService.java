@@ -26,7 +26,7 @@ public class StockOrderService {
 	private StockService stockService;
 	
 	@Autowired
-	private PostitionService postitionService;
+	private PositionService positionService;
 	
 	//買單
 	public StockOrder buyOrder(Long userId , String stockId , Long shares) {
@@ -45,7 +45,7 @@ public class StockOrderService {
 			//帳戶扣款
 			appUserService.deductAssets(user, totalCost);
 			//更新持倉
-			postitionService.increasePostition(user, stock, stock.getPrice(), shares);
+			positionService.increasePosition(user, stock, stock.getPrice(), shares);
 			//更新訂單狀態
 			stockOrder.setOrderStatus(OrderStatus.FILLED);
 		} catch (BusinessException e) {
@@ -69,7 +69,7 @@ public class StockOrderService {
 		stockOrder.setShares(shares);
 		
 		try {
-			BigDecimal realized = postitionService.decreasePosition(user, stock, stock.getPrice(), shares);
+			BigDecimal realized = positionService.decreasePosition(user, stock, stock.getPrice(), shares);
 			appUserService.addAssets(user, inCome);
 			//更新損益
 			stockOrder.setRealizedPnl(realized);

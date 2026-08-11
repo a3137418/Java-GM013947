@@ -21,11 +21,11 @@ import lombok.Setter;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "postition" , uniqueConstraints = @UniqueConstraint(columnNames = {"user_id" , "stock_id"}))
+@Table(name = "position" , uniqueConstraints = @UniqueConstraint(columnNames = {"user_id" , "stock_id"}))
 @Getter
 @Setter
 @NoArgsConstructor
-public class Postition {
+public class Position {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
