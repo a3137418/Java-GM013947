@@ -1,10 +1,13 @@
 package com.example.demo.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.order.OrderResponse;
 import com.example.demo.entity.AppUser;
 import com.example.demo.entity.Stock;
 import com.example.demo.entity.StockOrder;
@@ -80,5 +83,16 @@ public class StockOrderService {
 		}
 	
 		return stockOrderRepository.save(stockOrder);
+	}
+	
+	// 查詢訂單
+	public List<OrderResponse> getOrderByUser(Long userId){
+		List<StockOrder> stockorders =  stockOrderRepository.findByUserIdWithStockOrderByCreatedAtDesc(userId);
+		List<OrderResponse> responses = new ArrayList<>();
+		
+		for(StockOrder stockorder2 : stockorders) {
+			responses.add(OrderResponse.from(stockorder2));
+		}
+		return responses;
 	}
 }
