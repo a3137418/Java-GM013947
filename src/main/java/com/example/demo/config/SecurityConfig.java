@@ -48,8 +48,9 @@ public class SecurityConfig {
 				.cors(Customizer.withDefaults()) // 啟用CORS(設定前端合法位置, 請參考下方 corsConfigurationSource 方法)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 設定 Stateless Session
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers("/api/auth/register" , "/api/auth/login").permitAll()
 						.requestMatchers("/api/stock/**").permitAll()
+						.requestMatchers("/api/kbar/**").permitAll()
 						.anyRequest().authenticated())
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();

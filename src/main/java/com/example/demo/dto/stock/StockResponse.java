@@ -16,12 +16,14 @@ public class StockResponse {
 	private String stockId;
 	private String stockName;
 	private BigDecimal price;
+	private BigDecimal previousClose;
 	
 	public static StockResponse from(Stock stock) {
 		
 		StockResponse response = new StockResponse();
 		response.setStockId(stock.getStockId());
 		response.setStockName(stock.getStockName());
+		response.setPreviousClose(stock.getPreviousClose());
 		response.setPrice(stock.getPrice());
 		
 		return response;

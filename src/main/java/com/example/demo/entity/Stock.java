@@ -38,6 +38,10 @@ public class Stock {
 	@Column(nullable = false , precision = 10 , scale = 2)
 	private BigDecimal price;
 	
+	// 昨收價
+	@Column(name = "previous_close" , precision = 10 , scale = 2)
+	private BigDecimal previousClose;
+	
 	//價格更新時間
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;

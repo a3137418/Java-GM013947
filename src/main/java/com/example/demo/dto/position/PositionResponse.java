@@ -19,6 +19,7 @@ public class PositionResponse {
     private BigDecimal costPrice;
     private BigDecimal currentPrice;
     private BigDecimal unrealizedPnl;
+    private BigDecimal previousClose;
     
     
     public static PositionResponse from(Position position) {
@@ -28,6 +29,7 @@ public class PositionResponse {
     	response.setShares(position.getShares());
     	response.setCostPrice(position.getCostPrice());
     	response.setCurrentPrice(position.getStock().getPrice());
+    	response.setPreviousClose(position.getStock().getPreviousClose());
     	
     	BigDecimal shares = BigDecimal.valueOf(position.getShares());
     	BigDecimal currentPrice = position.getStock().getPrice();

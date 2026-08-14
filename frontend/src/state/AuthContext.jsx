@@ -59,7 +59,7 @@ export function AuthProvider({children}){
         user,
         token,
         // 有token 就代表已登入
-        isLogin: !!token ,
+        isLogin: !!token && !!user ,
         // JWT payload 裡的 role 是 ADMIN 就 代表管理者
         isAdmin: user?.role == 'ADMIN',
         login,

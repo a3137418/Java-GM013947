@@ -52,6 +52,7 @@ public class StockService {
 		if(existing.isPresent()) {
 			// 已存在，只更新價格
 			Stock stock = existing.get();
+			stock.setPreviousClose(stock.getPrice());
 			stock.setPrice(price);
 			stockRepository.save(stock);
 		}else {

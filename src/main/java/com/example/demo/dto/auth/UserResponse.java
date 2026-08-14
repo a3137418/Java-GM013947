@@ -11,14 +11,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RegisterResponse {
+public class UserResponse {
 	private Long id;
 	private String username;
 	private String email;
 	private BigDecimal assets;
 	
-	public static RegisterResponse from(AppUser user) {
-		RegisterResponse response = new RegisterResponse();
+	public static UserResponse from(AppUser user) {
+		UserResponse response = new UserResponse();
 		response.setId(user.getId());
 		response.setUsername(user.getUsername());
 		response.setEmail(user.getEmail());
