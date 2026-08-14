@@ -19,8 +19,8 @@ public class StockSyncScheduler {
 	
 	private static final String TWSE_URL = "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL";
 	
-	@Scheduled(cron = "0 0 15 * * ?")
-//	@Scheduled(cron = "0 */1 * * * ?")  // 每分鐘執行一次，測試用
+//	@Scheduled(cron = "0 0 15 * * ?")
+	@Scheduled(cron = "0 */1 * * * ?")  // 每分鐘執行一次，測試用
 	public void syncAllStock() {
 	 	TwseStockDto[] stocks = restTemplate.getForObject(TWSE_URL, TwseStockDto[].class);
 	 	 

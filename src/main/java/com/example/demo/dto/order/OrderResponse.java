@@ -25,6 +25,7 @@ public class OrderResponse {
 	private Long shares;
 	private BigDecimal realizedPnl;
 	private LocalDateTime createdAt;
+	private String failReason;
 	
 	public static OrderResponse from(StockOrder order) {
 		OrderResponse response = new OrderResponse();
@@ -37,6 +38,7 @@ public class OrderResponse {
 		response.setShares(order.getShares());
 		response.setRealizedPnl(order.getRealizedPnl());
 		response.setCreatedAt(order.getCreatedAt());
+		response.setFailReason(order.getFailReason());
 	
 		return response;
 		

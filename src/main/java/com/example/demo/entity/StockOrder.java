@@ -62,4 +62,7 @@ public class StockOrder {
 	@CreationTimestamp
 	@Column(updatable = false)
 	private LocalDateTime createdAt;
+	
+	@Column(name = "fail_reason" , nullable = true)
+	private String failReason;
 }

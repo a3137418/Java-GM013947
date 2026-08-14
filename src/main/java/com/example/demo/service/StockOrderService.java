@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.order.OrderResponse;
 import com.example.demo.entity.AppUser;
@@ -32,6 +33,7 @@ public class StockOrderService {
 	private PositionService positionService;
 	
 	//買單
+	@Transactional
 	public StockOrder buyOrder(Long userId , String stockId , Long shares) {
 		AppUser user = appUserService.getUserById(userId);
 		Stock stock = stockService.findByStockId(stockId);
@@ -53,12 +55,14 @@ public class StockOrderService {
 			stockOrder.setOrderStatus(OrderStatus.FILLED);
 		} catch (BusinessException e) {
 			stockOrder.setOrderStatus(OrderStatus.CANCELLED);
+			stockOrder.setFailReason(e.getMessage());
 		}
 		
 		return stockOrderRepository.save(stockOrder);
 	}
 	
 	//賣單
+	@Transactional
 	public StockOrder sellOrder(Long userId , String stockId , Long shares) {
 		AppUser user = appUserService.getUserById(userId);
 		Stock stock = stockService.findByStockId(stockId);
@@ -80,6 +84,7 @@ public class StockOrderService {
 			stockOrder.setOrderStatus(OrderStatus.FILLED);
 		} catch (BusinessException e) {
 			stockOrder.setOrderStatus(OrderStatus.CANCELLED);
+			stockOrder.setFailReason(e.getMessage());
 		}
 	
 		return stockOrderRepository.save(stockOrder);
