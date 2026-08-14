@@ -1,5 +1,7 @@
 package com.example.demo.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -8,6 +10,8 @@ import com.example.demo.dto.ApiResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+	
+	private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 	
 	@ExceptionHandler(BusinessException.class)
 	public ApiResponse<?> handleBusinessException(BusinessException e){
@@ -27,7 +31,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ApiResponse<?> handleException(Exception e) {
+    	log.error("未預期例外");
         return ApiResponse.error(500, "系統錯誤");
     }
+    
 	
 }
