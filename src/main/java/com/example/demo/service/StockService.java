@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.kbar.StockKbarResponse;
 import com.example.demo.entity.Stock;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -38,6 +40,11 @@ public class StockService {
 	public Stock findByStockId(String stockId) {
 	    return stockRepository.findByStockId(stockId)
 	            .orElseThrow(() -> new ResourceNotFoundException("查無此股票"));
+	}
+	
+	// 查詢所有股票
+	public List<Stock> getAllStocks() {
+		return stockRepository.findAll();
 	}
 	
 	public void syncStock(String stockId, String stockName, BigDecimal price) {
