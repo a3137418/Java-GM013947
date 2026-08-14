@@ -2,6 +2,7 @@ package com.example.demo.scheduler;
 
 import java.math.BigDecimal;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,11 @@ public class StockSyncScheduler {
 	public void syncAllStock() {
 	 	TwseStockDto[] stocks = restTemplate.getForObject(TWSE_URL, TwseStockDto[].class);
 	 	 
+	 	if(stocks == null) {
+	 		log.warn("TWSE API 沒有正常回應，本次同步跳過");
+	 		return;
+	 	}
+	 	
 	 	for(TwseStockDto dto : stocks) {
 	 		String closePrice = dto.getClosingPrice();
 	 	// 1. 檢查 closingPrice 是不是 "--" 或空字串，是的話 continue 跳過
@@ -36,4 +42,7 @@ public class StockSyncScheduler {
 	 		stockService.syncStock(dto.getCode(), dto.getName(), price);
 	 	}
 	}
+	
+	
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(StockSyncScheduler.class);
 }

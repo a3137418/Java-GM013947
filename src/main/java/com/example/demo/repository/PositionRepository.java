@@ -10,9 +10,8 @@ import com.example.demo.entity.Position;
 import org.springframework.data.repository.query.Param;
 
 public interface PositionRepository extends JpaRepository<Position, Long>{
-	List<Position> findByUserId(Long userId);
 	@Query("SELECT p FROM Position p JOIN FETCH p.stock WHERE p.user.id = :userId")
 	List<Position> findByUserIdWithStock(@Param("userId") Long userId);
 	Optional<Position> findByUserIdAndStockId(Long userId , Long stockId);
-	boolean existsByUserId(Long userId);
+
 }
