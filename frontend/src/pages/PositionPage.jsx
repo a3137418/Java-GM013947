@@ -113,6 +113,19 @@ function PositionPage() {
     0
   );
 
+  // 加總所有持股的成本
+  const totalCostValue = positions.reduce(
+    (sum , position) => sum + Number(position.costValue ?? 0),
+    0
+  );
+
+  // 加總所有持股的市值
+  const totalMarketValue = positions.reduce(
+    (sum , position) => sum + Number(position.marketValue ?? 0),
+    0
+  );
+
+
   return (
     <div style={{ padding: 24 }}>
       <Title level={2}>持倉</Title>
@@ -123,6 +136,8 @@ function PositionPage() {
             <Descriptions.Item label="帳號">{profile.username}</Descriptions.Item>
             <Descriptions.Item label="Email">{profile.email}</Descriptions.Item>
             <Descriptions.Item label="虛擬餘額">{formatNumber(profile.assets)}</Descriptions.Item>
+            <Descriptions.Item label="股票市值">{formatNumber(totalMarketValue)}</Descriptions.Item>
+            <Descriptions.Item label="成本">{formatNumber(totalCostValue)}</Descriptions.Item>
             <Descriptions.Item label="未實現總損益">
               <span style={{ color: totalUnrealizedPnl > 0 ? 'red' : totalUnrealizedPnl < 0 ? 'green' : 'black' }}>
                 {formatNumber(totalUnrealizedPnl)}

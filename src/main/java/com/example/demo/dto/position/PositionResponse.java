@@ -20,7 +20,10 @@ public class PositionResponse {
     private BigDecimal currentPrice;
     private BigDecimal unrealizedPnl;
     private BigDecimal previousClose;
-    
+    //市值
+    private BigDecimal marketValue;
+    //成本
+    private BigDecimal costValue;
     
     public static PositionResponse from(Position position) {
     	PositionResponse response = new PositionResponse();
@@ -35,7 +38,10 @@ public class PositionResponse {
     	BigDecimal currentPrice = position.getStock().getPrice();
     	BigDecimal costPrice = position.getCostPrice();
     	BigDecimal unrealizedPnl = currentPrice.subtract(costPrice).multiply(shares);
+    	
     	response.setUnrealizedPnl(unrealizedPnl);
+    	response.setMarketValue(currentPrice.multiply(shares));
+    	response.setCostValue(costPrice.multiply(shares));
     	
     	return response;
     }
