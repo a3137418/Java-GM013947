@@ -19,6 +19,7 @@ function Navbar() {
     { key: '/', label: <Link to="/">股票清單</Link> },
     ...(isLogin ? [{ key: '/watchlist', label: <Link to="/watchlist">自選股</Link> }] : []),
     ...(isLogin ? [{ key: '/positions', label: <Link to="/positions">持倉</Link> }] : []),
+    ...(isLogin ? [{ key: '/orders'   , label: <Link to="/orders">歷史訂單</Link>}] : []),
   ];
 
   return (

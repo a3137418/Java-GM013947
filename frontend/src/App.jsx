@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import PositionPage from "./pages/PositionPage";
 import KbarPage from "./pages/KbarPage";
 import WatchlistPage from "./pages/WatchlistPage";
+import OrderHistoryPage from "./pages/OrderHistoryPage";
 
 function App(){
     return(
@@ -17,6 +18,9 @@ function App(){
                 <Route path="/" element={<StockListPage/>} />
                 <Route path="/login" element={<LoginPage />}/>
                 <Route path="/register" element={<RegisterPage />}/>
+                <Route path="/kbar/:stockId" element={<KbarPage />} />  
+                
+
                 <Route path="/order/:stockId/:action" element={
                     <ProtectedRoute>
                         <OrderPage/>
@@ -32,7 +36,12 @@ function App(){
                         <WatchlistPage/>
                     </ProtectedRoute>
                 }/>
-                <Route path="/kbar/:stockId" element={<KbarPage />} />
+                <Route path="/orders" element={
+                    <ProtectedRoute>
+                        <OrderHistoryPage/>
+                    </ProtectedRoute>
+                }/>
+                
             </Routes>
         </>
     )
