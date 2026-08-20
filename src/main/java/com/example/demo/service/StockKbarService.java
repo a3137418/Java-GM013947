@@ -5,6 +5,7 @@ package com.example.demo.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,11 +37,15 @@ public class StockKbarService {
 	
 	private static final String FINMIND_URL = "https://api.finmindtrade.com/api/v4/data";
 	
-	public List<StockKbarResponse> getKbar(String stockId , KbarType type){
+	public List<StockKbarResponse> getKbar(String stockId , KbarType type ){
 		Stock stock = stockService.findByStockId(stockId);
+		Optional<StockKbar> newDay =stockKbarRepository.findTopByStockAndTypeOrderByDateDesc(stock, type);
 		
-		if(!stockKbarRepository.existsByStockAndType(stock, type)) {
-			fetchAndSaveFromFinMind(stock, type);
+		if(newDay.isEmpty()) {
+			fetchAndSaveFromFinMind(stock, type ,LocalDate.now().minusMonths(3));
+		}else if(!newDay.get().getDate().equals(LocalDate.now())){
+			fetchAndSaveFromFinMind(stock, type , newDay.get().getDate().plusDays(1));
+		}else {
 		}
 		List<StockKbar> kbars = stockKbarRepository.findByStockAndTypeOrderByDateAsc(stock, type);
 		List<StockKbarResponse> responses = new ArrayList<>();
@@ -50,8 +55,7 @@ public class StockKbarService {
 		return responses;
 	}
 	
-	public void fetchAndSaveFromFinMind(Stock stock , KbarType type) {
-		LocalDate startDate = LocalDate.now().minusMonths(3);
+	public void fetchAndSaveFromFinMind(Stock stock , KbarType type , LocalDate startDate) {
 		String url = FINMIND_URL +  "?dataset=TaiwanStockPrice&data_id=" + stock.getStockId()
 								+ "&start_date=" + startDate + "&token=" + finmindToken;
 		

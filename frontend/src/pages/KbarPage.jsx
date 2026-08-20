@@ -20,6 +20,7 @@ function KbarPage() {
 
   const dates = kbars.map((k) => k.date);
   const values = kbars.map((k) => [k.open, k.close, k.low, k.high]);
+  const stockName = kbars[0]?.stockName;
 
   const option = {
     xAxis: { type: 'category', data: dates },
@@ -34,7 +35,7 @@ function KbarPage() {
 
   return (
     <div style={{ padding: 24 }}>
-      <Title level={2}>{stockId} K 線圖</Title>
+      <Title level={2}>{stockName} K 線圖</Title>
       <Card>
         <ReactECharts option={option} style={{ height: '500px' }} />
       </Card>

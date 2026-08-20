@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.kbar.StockKbarResponse;
+import java.time.LocalDate;
 import com.example.demo.entity.Stock;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -47,11 +47,16 @@ public class StockService {
 		return stockRepository.findAll();
 	}
 	
+	
+	// 股票同步
 	public void syncStock(String stockId, String stockName, BigDecimal price) {
 		Optional<Stock> existing = stockRepository.findByStockId(stockId);
 		if(existing.isPresent()) {
 			// 已存在，只更新價格
 			Stock stock = existing.get();
+			if(stock.getUpdatedAt().toLocalDate().isEqual(LocalDate.now())) {
+				return;
+			}
 			stock.setPreviousClose(stock.getPrice());
 			stock.setPrice(price);
 			stockRepository.save(stock);

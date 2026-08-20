@@ -15,6 +15,7 @@ import lombok.Setter;
 public class StockKbarResponse {
 
 	private String stockId;
+	private String stockName;
 	private LocalDate date;
 	private BigDecimal open;
 	private BigDecimal high;
@@ -25,6 +26,7 @@ public class StockKbarResponse {
 	public static StockKbarResponse from(StockKbar kbar) {
 		StockKbarResponse response = new StockKbarResponse();
 		response.setStockId(kbar.getStock().getStockId());
+		response.setStockName(kbar.getStock().getStockName());
 		response.setDate(kbar.getDate());
 		response.setOpen(kbar.getOpen());
 		response.setHigh(kbar.getHigh());
