@@ -18,4 +18,5 @@ public interface StockKbarRepository extends JpaRepository<StockKbar,Long>{
 	
 	Optional<StockKbar> findTopByStockAndTypeOrderByDateDesc(Stock stock , KbarType type);
 	
+	List<StockKbar> findTop2ByStockAndTypeOrderByDateDesc(Stock stock , KbarType type);
 }

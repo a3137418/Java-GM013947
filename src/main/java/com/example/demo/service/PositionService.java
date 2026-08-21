@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import com.example.demo.enums.KbarType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,8 @@ public class PositionService {
 	@Autowired
 	private PositionRepository positionRepository;
 	
-	
+	@Autowired
+	private StockKbarService stockKbarService;
 	
 	
 	//買進
@@ -99,6 +101,7 @@ public class PositionService {
 		List<PositionResponse> responses = new ArrayList<>();
 		
 		for(Position position : positions) {
+			stockKbarService.syncPriceFromKbar(position.getStock(), KbarType.DAY);
 			responses.add(PositionResponse.from(position));
 		}
 		return responses;

@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +40,8 @@ public class StockKbarService {
 	
 	public List<StockKbarResponse> getKbar(String stockId , KbarType type ){
 		Stock stock = stockService.findByStockId(stockId);
-		Optional<StockKbar> newDay =stockKbarRepository.findTopByStockAndTypeOrderByDateDesc(stock, type);
+		ensureKbarFresh(stock , type);
 		
-		if(newDay.isEmpty()) {
-			fetchAndSaveFromFinMind(stock, type ,LocalDate.now().minusMonths(3));
-		}else if(!newDay.get().getDate().equals(LocalDate.now())){
-			fetchAndSaveFromFinMind(stock, type , newDay.get().getDate().plusDays(1));
-		}else {
-		}
 		List<StockKbar> kbars = stockKbarRepository.findByStockAndTypeOrderByDateAsc(stock, type);
 		List<StockKbarResponse> responses = new ArrayList<>();
 		for(StockKbar kbar : kbars) {
@@ -75,6 +70,29 @@ public class StockKbarService {
 			kbars.add(kbar);
 		}
 		stockKbarRepository.saveAll(kbars);
+	}
+	
+	
+	public void ensureKbarFresh(Stock stock , KbarType type) {
+	
+		Optional<StockKbar> newDay =stockKbarRepository.findTopByStockAndTypeOrderByDateDesc(stock, type);	
+		if(newDay.isEmpty()) {
+			fetchAndSaveFromFinMind(stock, type ,LocalDate.now().minusMonths(3));
+		}else if(!newDay.get().getDate().equals(LocalDate.now())){
+			fetchAndSaveFromFinMind(stock, type , newDay.get().getDate().plusDays(1));
+		}else {
+		}
+	}
+	
+	public void syncPriceFromKbar(Stock stock , KbarType type) {
+		ensureKbarFresh(stock, type);
+		List<StockKbar> latest = stockKbarRepository.findTop2ByStockAndTypeOrderByDateDesc(stock, type);
+		
+		if(latest.size() >= 2) {
+			stockService.ensureStockPrice(stock , latest.get(0).getClose() , latest.get(1).getClose());
+		}else {
+			return;
+		}
 	}
 	
 }

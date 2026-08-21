@@ -11,6 +11,7 @@ import com.example.demo.dto.stock.StockResponse;
 import com.example.demo.entity.AppUser;
 import com.example.demo.entity.Stock;
 import com.example.demo.entity.Watchlist;
+import com.example.demo.enums.KbarType;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.repository.WatchListRepository;
 
@@ -19,6 +20,9 @@ public class WatchlistService {
 
     @Autowired
     private WatchListRepository watchListRepository;
+    @Autowired
+    private StockKbarService stockKbarService;
+    
     @Autowired
     private AppUserService appUserService;
     @Autowired
@@ -56,6 +60,7 @@ public class WatchlistService {
         List<Watchlist> watchlists = watchListRepository.findByUserWithStock(userId);
         List<StockResponse> responses = new ArrayList<>();
         for (Watchlist watchlist : watchlists) {
+        	stockKbarService.syncPriceFromKbar(watchlist.getStock() , KbarType.DAY);
             responses.add(StockResponse.from(watchlist.getStock()));
         }
         return responses;

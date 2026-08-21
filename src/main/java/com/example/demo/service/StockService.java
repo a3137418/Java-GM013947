@@ -18,14 +18,8 @@ import com.example.demo.repository.StockRepository;
 @Service
 public class StockService {
 
-    private final TradeLogAspect tradeLogAspect;
-
    @Autowired
    private StockRepository stockRepository;
-
-    StockService(TradeLogAspect tradeLogAspect) {
-        this.tradeLogAspect = tradeLogAspect;
-    }
 
 	// 新增股票
    public Stock addStock(String stockId , String stockName , BigDecimal price) {
@@ -77,4 +71,13 @@ public class StockService {
 			addStock(stockId, stockName, price);
 		}
 	}
+	
+	
+	// 更新股票現價及昨收價
+	public void ensureStockPrice(Stock stock , BigDecimal price , BigDecimal previousClose) {
+		stock.setPrice(price);
+		stock.setPreviousClose(previousClose);
+		stockRepository.save(stock);
+	}
+	
 }
