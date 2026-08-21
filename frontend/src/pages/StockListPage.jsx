@@ -58,6 +58,9 @@ function StockListPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { isLogin } = useAuth();
+  const [page , setPage] = useState(0);
+  const [totalSizes , setTotalSizes] = useState(0);
+
 
   const handleAddToWatchlist = async (stockId) => {
     try {
@@ -73,22 +76,14 @@ function StockListPage() {
 
   useEffect(() => {
     async function loadStocks() {
-      const result = await apiFetch('/stock');
-      setStocks(result.data);
+
+      const result = await apiFetch(`/stock?page=${page}&size=10&keyword=${keyword}`);
+      setStocks(result.data.content);
+      setTotalSizes(result.data.totalElements);
       setLoading(false);
     }
     loadStocks();
-  }, []);
-
-  // 前端直接過濾，不用另外打 API（股票清單資料量不大，全部抓回來後在瀏覽器端篩選就好）
-  const filteredStocks = stocks.filter((stock) => {
-    const lowerKeyword = keyword.trim().toLowerCase();
-    if (!lowerKeyword) return true;
-    return (
-      stock.stockId.toLowerCase().includes(lowerKeyword) ||
-      stock.stockName.toLowerCase().includes(lowerKeyword)
-    );
-  });
+  }, [ page , keyword ]);
 
   const columns = [
     { title: '股票代碼', dataIndex: 'stockId', key: 'stockId' },
@@ -119,10 +114,15 @@ function StockListPage() {
         placeholder="搜尋股票代碼或名稱"
         allowClear
         value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
+        onChange={(e) => {setKeyword(e.target.value) ;  setPage(0)}}
         style={{ maxWidth: 320, marginBottom: 16 }}
       />
-      <Table rowKey="stockId" columns={columns} dataSource={filteredStocks} loading={loading} />
+      <Table rowKey="stockId" columns={columns} dataSource={stocks} loading={loading} pagination={{
+        current:page+1,
+        pageSize:10,
+        total:totalSizes,
+        onChange: (newPage) => {setPage(newPage-1)}
+      }} />
     </div>
   );
 }

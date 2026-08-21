@@ -1,13 +1,15 @@
 package com.example.demo.service;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import com.example.demo.aspect.TradeLogAspect;
 import com.example.demo.entity.Stock;
 import com.example.demo.exception.BusinessException;
 import com.example.demo.exception.ResourceNotFoundException;
@@ -16,8 +18,14 @@ import com.example.demo.repository.StockRepository;
 @Service
 public class StockService {
 
+    private final TradeLogAspect tradeLogAspect;
+
    @Autowired
    private StockRepository stockRepository;
+
+    StockService(TradeLogAspect tradeLogAspect) {
+        this.tradeLogAspect = tradeLogAspect;
+    }
 
 	// 新增股票
    public Stock addStock(String stockId , String stockName , BigDecimal price) {
@@ -43,8 +51,12 @@ public class StockService {
 	}
 	
 	// 查詢所有股票
-	public List<Stock> getAllStocks() {
-		return stockRepository.findAll();
+	public Page<Stock> getAllStocks(Pageable page , String keyword) {
+		if(keyword == null || keyword.isEmpty()) {
+			return stockRepository.findAll(page);
+		}else {
+			return stockRepository.findByStockIdContainingIgnoreCaseOrStockNameContainingIgnoreCase(keyword, keyword, page);
+		}
 	}
 	
 	

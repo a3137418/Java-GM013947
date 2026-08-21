@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ApiResponse;
@@ -21,12 +23,15 @@ public class StockController {
 	private StockService stockService;
 	
 	@GetMapping
-	public ApiResponse<List<StockResponse>> getAllStocks(){
-		List<Stock> stocks = stockService.getAllStocks();
-		List<StockResponse> responses = new ArrayList<>();
-		for(Stock stock : stocks) {
-			responses.add(StockResponse.from(stock));
-		}
+	public ApiResponse<Page<StockResponse>> getAllStocks(
+			@RequestParam(defaultValue = "0") int page , 
+			@RequestParam(defaultValue = "10") int sizes,
+			@RequestParam(required = false) String keyword){
+		Pageable pageable = PageRequest.of(page, sizes);
+		
+		Page<Stock> stocks = stockService.getAllStocks(pageable , keyword);
+		
+		Page<StockResponse> responses = stocks.map(StockResponse::from);
 		
 		return ApiResponse.success("查詢成功", responses);
 	}
