@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Tag, Typography } from "antd";
+import { Table, Tag, Typography, Card, Statistic } from "antd";
 import { apiFetch } from "../api/client";
 import { formatNumber } from "../utils/format";
 
@@ -19,6 +19,12 @@ function OrderHistoryPage(){
         loadingOrders();
     },[]);
 
+    // 加總所有已實現損益
+    const totalRealizedPnl = orders.reduce(
+        (sum, order) => sum + Number(order.realizedPnl ?? 0),
+        0
+    );
+    
     const columns = [
         {
             title: '時間',
@@ -76,9 +82,19 @@ function OrderHistoryPage(){
         },
     ];
 
+    
+
     return (
         <div style={{ padding: 24 }}>
             <Title level={2}>歷史訂單</Title>
+            <Card style={{ marginBottom: 16, maxWidth: 280 }}>
+                <Statistic
+                    title="總已實現損益"
+                    value={totalRealizedPnl}
+                    precision={2}
+                    valueStyle={{ color: totalRealizedPnl > 0 ? 'red' : totalRealizedPnl < 0 ? 'green' : 'black' }}
+                />
+            </Card>
             <Table rowKey="id" columns={columns} dataSource={orders} loading={loading} />
         </div>
     );

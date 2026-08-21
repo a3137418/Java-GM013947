@@ -100,4 +100,9 @@ public class StockOrderService {
 		}
 		return responses;
 	}
+	
+	//查詢總實現損益
+	public BigDecimal getTotalRealizedPnl(Long userId) {
+		return stockOrderRepository.sumRealizedPnlByUserId(userId);
+	}
 }

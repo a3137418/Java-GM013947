@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -12,5 +13,8 @@ import com.example.demo.entity.StockOrder;
 public interface StockOrderRepository extends JpaRepository<StockOrder, Long>{
 	@Query("SELECT so FROM StockOrder so JOIN FETCH so.stock where so.user.id = :userId order by so.createdAt DESC")
 	List<StockOrder> findByUserIdWithStockOrderByCreatedAtDesc(@Param("userId") Long userId);
+	
+	@Query("select coalesce(sum(so.realizedPnl) , 0 ) from StockOrder so where so.user.id = :userId")
+	BigDecimal sumRealizedPnlByUserId(@Param("userId") Long userId);
 
 }

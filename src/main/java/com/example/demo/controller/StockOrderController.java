@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,4 +68,14 @@ public class StockOrderController {
 		List<OrderResponse> orders = stockOrderService.getOrderByUser(userId); 
 		return ApiResponse.success("查詢成功", orders);
 	}
+	
+	//查詢總已實現損益
+	@GetMapping("/realized-pnl")
+	public ApiResponse<BigDecimal> getTotalRealizedPnl(Authentication authentication){
+		String username = authentication.getName();
+		Long userId = appUserService.getUserByUsername(username).getId();
+		BigDecimal totalrealizedpnl = stockOrderService.getTotalRealizedPnl(userId);
+		return ApiResponse.success("查詢成功", totalrealizedpnl);
+	}
+	
 }
